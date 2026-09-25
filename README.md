@@ -1,6 +1,6 @@
 # Composer Package Template
 
-[![DevTests](https://github.com/limegreentangerine/composer_package/actions/workflows/DevTest.yml/badge.svg?branch=develop)](https://github.com/limegreentangerine/composer_package/actions/workflows/DevTest.yml)
+[![DevTests](https://github.com/limegreentangerine/mapbox/actions/workflows/DevTest.yml/badge.svg?branch=develop)](https://github.com/limegreentangerine/mapbox/actions/workflows/DevTest.yml)
 
 Do a find and replace on the following fields before you start, best to make the search case sensitive:
 

@@ -1,0 +1,9 @@
+.block__lgt-mapbox {
+	position: relative;
+}
+
+.block__lgt-mapbox:after {
+	content: '';
+	display: block;
+	padding-top: 50%;
+}

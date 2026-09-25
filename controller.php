@@ -1,11 +1,16 @@
 <?php
 
-namespace Concrete\Package\ComposerPackage;
+namespace Concrete\Package\Mapbox;
 
-use Concrete\Core\Package\Package;
+use Route;
+use Concrete\Core\Entity\Package;
+use ClassKit\Package\PackageController;
+use ClassKit\Package\Traits\{BlockTrait, PageTrait};
 
-class Controller extends Package
+class Controller extends PackageController
 {
+    use BlockTrait;
+    use PageTrait;
     /**
      * The packages handle.
      * Note that this must be unique in the
@@ -13,14 +18,14 @@ class Controller extends Package
      *
      * @var string
      */
-    protected $pkgHandle = 'composer_package';
+    protected $pkgHandle = 'mapbox';
 
     /**
      * The packages version.
      *
      * @var string
      */
-    protected $pkgVersion = '0.0.0';
+    protected $pkgVersion = '0.0.1';
 
     /**
      * The minimum Concrete version compatible with the package.
@@ -83,7 +88,7 @@ class Controller extends Package
      * @var array
      */
     protected $pkgAutoloaderRegistries = [
-        'src' => '\ComposerPackage',
+        'src' => '\Mapbox',
     ];
 
     /**
@@ -97,11 +102,27 @@ class Controller extends Package
 
     public function getPackageName()
     {
-        return t('composer_name');
+        return t('Mapbox');
     }
 
     public function getPackageDescription()
     {
-        return t('composer_description');
+        return t('A custom ConcreteCMS package for displaying maps through the Mapbox system');
     }
+
+    public function installOrUpgrade(Package $pkg)
+    {
+        // Add blocks
+        $this->autoInstallBlocks($pkg);
+
+        // dashboard pages
+        $this->addSinglePage('/dashboard/mapbox', $pkg, t('Mapbox'));
+    }
+
+    public function registerRoutes(): void
+    {
+        Route::register('/ajax/mapbox', '\Mapbox\Ajax\Mapbox::getApiKey');
+    }
+
+    public function registerEvents(): void {}
 }
