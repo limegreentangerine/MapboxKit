@@ -1,5 +1,5 @@
 {
-	"name": "limegreentangerine/mapbox",
+	"name": "limegreentangerine/mapbox_kit",
 	"description": "A custom ConcreteCMS package for displaying maps through the Mapbox system",
 	"type": "concrete5-package",
 	"license": "proprietary",
