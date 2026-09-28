@@ -199,4 +199,62 @@ class MapboxTest extends TestCase
 
         $api->getLocationDetails('London');
     }
+
+    public function testGetLocationDetailsServesRepeatLookupsFromCache(): void
+    {
+        $api = $this->makeApi([$this->geocodeResponse([$this->feature(0.95)])]);
+
+        $first = $api->getLocationDetails('London');
+        $second = $api->getLocationDetails('London');
+
+        $this->assertCount(1, $this->history);
+        $this->assertInstanceOf(JsonResponse::class, $second);
+        $this->assertSame($first->getContent(), $second->getContent());
+    }
+
+    public function testGetLocationDetailsCachesNoConfidentMatch(): void
+    {
+        $api = $this->makeApi([$this->geocodeResponse([$this->feature(0.5)])]);
+
+        $this->assertNull($api->getLocationDetails('Somewhere vague'));
+        $this->assertNull($api->getLocationDetails('Somewhere vague'));
+        $this->assertCount(1, $this->history);
+    }
+
+    public function testGetLocationDetailsDoesNotCacheHttpErrors(): void
+    {
+        $api = $this->makeApi([
+            new Response(500, [], 'Server Error'),
+            $this->geocodeResponse([$this->feature(0.95)]),
+        ]);
+
+        $this->assertSame(500, $api->getLocationDetails('London')->getStatusCode());
+        $this->assertSame(200, $api->getLocationDetails('London')->getStatusCode());
+        $this->assertCount(2, $this->history);
+    }
+
+    public function testGetLocationDetailsSharesCacheAcrossCaseAndWhitespace(): void
+    {
+        $api = $this->makeApi([$this->geocodeResponse([$this->feature(0.95, 'St Albans')])]);
+
+        $api->getLocationDetails('St Albans');
+        $second = $api->getLocationDetails("  st \t ALBANS ");
+
+        $this->assertCount(1, $this->history);
+        $this->assertInstanceOf(JsonResponse::class, $second);
+    }
+
+    public function testGetLocationDetailsCachesEachLocationSeparately(): void
+    {
+        $api = $this->makeApi([
+            $this->geocodeResponse([$this->feature(0.95)]),
+            $this->geocodeResponse([$this->feature(0.95, 'Leeds')]),
+        ]);
+
+        $api->getLocationDetails('London');
+        $leeds = $api->getLocationDetails('Leeds');
+
+        $this->assertCount(2, $this->history);
+        $this->assertStringStartsWith('Leeds,', json_decode($leeds->getContent(), true)['place_name']);
+    }
 }

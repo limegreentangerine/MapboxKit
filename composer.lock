@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a43feae7d26687effe2d4220ba18f312",
+    "content-hash": "25c3e323ecbe09548d08d06b3d433b39",
     "packages": [
         {
             "name": "limegreentangerine/class_kit",
-            "version": "1.0.4",
+            "version": "dev-feature/cached-api-responses",
             "source": {
                 "type": "git",
                 "url": "https://github.com/limegreentangerine/ClassKit.git",
-                "reference": "d3316cb3862016445a3525a21081133addbcfd62"
+                "reference": "0d03663bce7d393dcbb92b3166e070c747878a0d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/limegreentangerine/ClassKit/zipball/d3316cb3862016445a3525a21081133addbcfd62",
-                "reference": "d3316cb3862016445a3525a21081133addbcfd62",
+                "url": "https://api.github.com/repos/limegreentangerine/ClassKit/zipball/0d03663bce7d393dcbb92b3166e070c747878a0d",
+                "reference": "0d03663bce7d393dcbb92b3166e070c747878a0d",
                 "shasum": ""
             },
             "require-dev": {
@@ -49,9 +49,9 @@
             "description": "Collection of helper classes for LGT packages.",
             "support": {
                 "issues": "https://github.com/limegreentangerine/ClassKit/issues",
-                "source": "https://github.com/limegreentangerine/ClassKit/tree/1.0.4"
+                "source": "https://github.com/limegreentangerine/ClassKit/tree/feature/cached-api-responses"
             },
-            "time": "2026-09-24T12:59:13+00:00"
+            "time": "2026-09-28T10:35:57+00:00"
         }
     ],
     "packages-dev": [
@@ -14828,9 +14828,18 @@
             "time": "2024-05-02T21:36:00+00:00"
         }
     ],
-    "aliases": [],
+    "aliases": [
+        {
+            "package": "limegreentangerine/class_kit",
+            "version": "dev-feature/cached-api-responses",
+            "alias": "1.0.99",
+            "alias_normalized": "1.0.99.0"
+        }
+    ],
     "minimum-stability": "stable",
-    "stability-flags": {},
+    "stability-flags": {
+        "limegreentangerine/class_kit": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {},

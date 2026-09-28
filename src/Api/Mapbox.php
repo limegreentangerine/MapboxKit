@@ -4,6 +4,7 @@ namespace Mapbox\Api;
 
 use Core;
 use Mapbox\Log\MapboxLogger;
+use Mapbox\Search\CachedGeocode;
 use Concrete\Core\Package\Package;
 use ClassKit\Api\Enum\RequestMethod;
 use ClassKit\Api\ConnectionController;
@@ -35,6 +36,10 @@ class Mapbox extends ConnectionController
      * @var MapboxLogger
      */
     protected $logger;
+    /**
+     * @var CachedGeocode
+     */
+    protected $cache;
 
     /**
      * Api constructor.
@@ -46,6 +51,7 @@ class Mapbox extends ConnectionController
         $this->rf = Core::make(\Concrete\Core\Http\ResponseFactoryInterface::class);
         $this->config = $this->pkg->getController()->getFileConfig();
         $this->logger = Core::make(MapboxLogger::class)->getLogger();
+        $this->cache = Core::make(CachedGeocode::class);
         $this->setApiKey($this->config->get('mapbox.apiKey'));
         $this->setAuthHeader($this->getApiKey());
         parent::__construct(
@@ -97,6 +103,11 @@ class Mapbox extends ConnectionController
      */
     public function getLocationDetails(string $location = '')
     {
+        $cached = $this->cache->get($location);
+        if ($cached !== null) {
+            return $cached['feature'] === null ? null : $this->rf->json($cached['feature']);
+        }
+
         $request = (object) $this->makeRequest(RequestMethod::GET->value, $this->formatURL(sprintf('/geocoding/v5/mapbox.places/%s.json', rawurlencode($location))) . '&country=gb');
         if ($request->getStatusCode() !== 200) {
             $this->logger->addError(sprintf('Unable to get location details for %s: [%d]. Details. %s. %s %s (%s)', $location, $request->getStatusCode(), $request->getBody(), __FUNCTION__, __CLASS__, __LINE__));
@@ -110,9 +121,12 @@ class Mapbox extends ConnectionController
 
         if (is_object($body)
             && property_exists($body, 'features') && count($body->features) > 0 && $body->features[0]->relevance > 0.7) {
+            $this->cache->put($location, $body->features[0]);
             return $this->rf->json($body->features[0]);
         }
 
+        // Cache the lack of a confident match too; only failed requests are retried
+        $this->cache->put($location, null);
         return null;
 
     }
