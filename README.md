@@ -1,134 +1,61 @@
-# Composer Package Template
+# Mapbox for Concrete CMS
 
-[![DevTests](https://github.com/limegreentangerine/mapbox/actions/workflows/DevTest.yml/badge.svg?branch=develop)](https://github.com/limegreentangerine/mapbox/actions/workflows/DevTest.yml)
+[![SystemTests](https://github.com/limegreentangerine/MapboxKit/actions/workflows/SystemTests.yml/badge.svg)](https://github.com/limegreentangerine/MapboxKit/actions/workflows/SystemTests.yml)
 
-Do a find and replace on the following fields before you start, best to make the search case sensitive:
+[![CodeStandards](https://github.com/limegreentangerine/MapboxKit/actions/workflows/CodeStandards.yml/badge.svg)](https://github.com/limegreentangerine/MapboxKit/actions/workflows/CodeStandards.yml)
 
-`composer_package` - the package handle
-`composer_description` - the description of the package
-`ComposerPackage` - the namespace of the package
-`composer_name` - the package name
+Mapbox is a Concrete CMS package that adds an editable Mapbox GL JS map block and a PHP helper for looking up UK locations with the Mapbox Geocoding API.
 
-## Authors
+## Requirements
 
-Ensure to add your credit in the `authors` section of `composer.json` so issues can be assigned appropriately.
+- Concrete CMS 9.5 or later
+- PHP 8.4 or later
+- The `class_kit` Concrete CMS package (required by this package)
+- A Mapbox public access token
 
-## Static Analysis
+The map block loads Mapbox GL JS 3.21.0 from Mapbox's CDN.
 
-Install the Composer dependencies, then run the following command from the package
-root:
+## Installation
+
+Install the package's Composer dependencies, including `limegreentangerine/class_kit`, using the Composer repository configured for your project. Install the package in Concrete CMS using your site's normal package deployment process. Its Concrete package handle is `mapbox`.
+
+After installation, open **Dashboard > Mapbox**, enter a Mapbox public access token, and save the settings. You can create tokens in your [Mapbox account](https://account.mapbox.com/). Use a public (`pk.`) token intended for browser use; the map block exposes the token to site visitors. Apply appropriate URL restrictions and scopes in Mapbox.
+
+## Map block
+
+Add the **Mapbox** block to a page and configure:
+
+- Centre latitude and longitude, zoom, and pitch
+- A Mapbox style URL or style identifier (custom styles can be created in [Mapbox Studio](https://studio.mapbox.com/))
+- Whether visitors can interact with the map
+- Whether to show navigation controls and where to place them
+- Whether to show 3D buildings and their extrusion colour
+- Any number of markers, each with a latitude, longitude, and optional colour
+
+The block obtains the configured token from `/ajax/mapbox`, then renders the map in the browser. A missing token is reported in the browser console and displayed on the map in the page.
+
+## PHP geocoding helper
+
+The `Mapbox\Api\Mapbox` class provides `getLocationDetails(string $location)`. In a Concrete CMS context, resolve it through the application container:
+
+```php
+$mapbox = \Core::make(\Mapbox\Api\Mapbox::class);
+$result = $mapbox->getLocationDetails('London');
+```
+
+The helper queries the Mapbox Geocoding API with the country restricted to `gb`. It returns a JSON response for the first feature when its relevance is greater than `0.7`, or `null` when there is no confident match. An API error is returned as a JSON response with the upstream status code. Successful features and no-match results are cached for one hour by default.
+
+## Development
+
+Install the development dependencies, then run:
 
 ```bash
+composer test
 composer check
 ```
 
-This runs PHPStan at level 4 against the `src` and `tests` directories by default. The
-analysis uses the configuration in `phpstan.neon`, including
-`phpstan-bootstrap.php`, and reports errors in table format. The command displays
-any findings but returns a successful exit code, so it can be used for
-informational checks without failing a workflow.
+`composer test` runs the PHPUnit suite. `composer check` runs PHPStan and prints findings; the configured Composer script does not fail when PHPStan reports findings.
 
-When adding more folders to your package, much like [Formatting](#formatting) below you will need to add these folders to your `phpstan.neon` files. For example:
+## License
 
-### Default settings
-
-```yaml
-parameters:
-    bootstrapFiles:
-        - phpstan-bootstrap.php
-    level: 4
-    paths:
-        - src
-        - tests
-```
-
-### Example with additional info
-
-```yaml
-parameters:
-    bootstrapFiles:
-        - phpstan-bootstrap.php
-    level: 4
-    paths:
-        - blocks
-        - controllers
-        - elements
-        - single_pages
-        - src
-        - tests
-```
-
-## Formatting
-
-As you add more folders to the package you will want those to be formatted too, look in `.php-cs-fixer.dist.php` and add them to the already define folders.
-
-### Default Settings
-
-```php
-$finder = PhpCsFixer\Finder::create()
-    ->in([
-        __DIR__ . '/src',
-        __DIR__ . '/tests'
-    ])
-    ->append([
-        __DIR__ . '/controller.php'
-    ])
-    ->exclude([
-        'vendor',
-    ]);
-```
-
-### Example with addtional info
-
-```php
-$finder = PhpCsFixer\Finder::create()
-    ->in([
-        __DIR__ . '/attributes',
-        __DIR__ . '/blocks',
-        __DIR__ . '/controllers',
-        __DIR__ . '/elements',
-        __DIR__ . '/overrides',
-        __DIR__ . '/single_pages',
-        __DIR__ . '/src',
-        __DIR__ . '/tests'
-    ])
-    ->append([
-        __DIR__ . '/another.php'
-        __DIR__ . '/controller.php'
-    ])
-    ->exclude([
-        'bin',
-        'vendor'
-    ]);
-```
-
-## GitHub Actions
-
-`DevTests` - runs formatting and build tests on the `develop` branch.
-
-`Tests` - runs formatting, build and workflow triggers on `main` branch.
-
-### Cloudflare Access credentials
-
-The workflows install dependencies from the private `packages.limegreentangerine.net`
-Composer registry. To allow Composer to authenticate with Cloudflare Access, add the
-following as **Repository secrets** under **Settings > Secrets & Variables > Actions**:
-
-- `CLOUDFLARE_ACCESS_CLIENT_ID` - the Cloudflare Access service-token client ID.
-- `CLOUDFLARE_ACCESS_CLIENT_SECRET` - the matching Cloudflare Access service-token
-  client secret.
-
-These secrets are passed to Composer as the `CF-Access-Client-Id` and
-`CF-Access-Client-Secret` headers during dependency installation. Keep the values
-private and do not add them to the repository.
-
-## Deployment Tokens (`main` branch)
-
-The github actions has a link to `packages.limegreentangerine.net` so it will build on new version publication.
-
-You will need to go to **Settings > Secrets & Variables > Actions** and add a new **Repository Secret**
-
-- Name: `CROSS_REPO_TOKEN`
-- Secret: _Available in mSecure under lgtdevrow github details_
-
-Once these details are entered your tests will pass for pull requests and for deployment.
+This package is proprietary. See [LICENSE](LICENSE) for the terms.
