@@ -2,6 +2,8 @@
 
 $finder = PhpCsFixer\Finder::create()
     ->in([
+        __DIR__ . '/blocks',
+        __DIR__ . '/controllers',
         __DIR__ . '/src',
         __DIR__ . '/tests'
     ])

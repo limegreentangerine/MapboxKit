@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.concrete5.org/doctrine-xml/0.5"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.concrete5.org/doctrine-xml/0.5 https://concretecms.github.io/doctrine-xml/doctrine-xml-0.5.xsd">
+
+    <table name="btMapbox">
+        <field name="bID" type="integer">
+            <unsigned/>
+            <key/>
+        </field>
+        <field name="centerLatitude" type="string" size="255" />
+        <field name="centerLongitude" type="string" size="255" />
+        <field name="theme" type="string" size="255" />
+        <field name="zoom" type="integer">
+            <unsigned />
+        </field>
+        <field name="pitch" type="integer">
+            <unsigned />
+        </field>
+        <field name="interactive" type="integer">
+            <unsigned />
+        </field>
+        <field name="show_controls" type="integer">
+            <unsigned />
+        </field>
+        <field name="control_placement" type="string" size="255" />
+        <field name="showBuildings" type="integer">
+            <unsigned />
+        </field>
+        <field name="extrusionColor" type="string" size="7"/>
+    </table>
+
+    <table name="btMapboxMarkers">
+        <field name="id" type="integer">
+            <unsigned />
+            <autoincrement />
+            <key />
+        </field>
+        <field name="bID" type="integer">
+            <unsigned/>
+        </field>
+        <field name="latitude" type="string" size="255" />
+        <field name="longitude" type="string" size="255" />
+        <field name="markerColor" type="string" size="7"/>
+        <field name="sortOrder" type="integer">
+            <unsigned />
+            <default value="0" />
+        </field>
+    </table>
+
+</schema>
