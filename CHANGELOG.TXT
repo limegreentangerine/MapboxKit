@@ -1,0 +1,14 @@
+Mapbox for Concrete CMS - Changelog
+===================================
+
+Entries begin with the current Composer package version. Earlier package
+history has not been reconstructed here.
+
+1.0.0
+------------
+Baseline recorded for the current package:
+- Adds a Concrete CMS block for interactive Mapbox GL JS maps, map controls,
+  optional 3D buildings, and configurable markers.
+- Adds dashboard settings for the Mapbox public access token.
+- Adds a UK-restricted Mapbox Geocoding API helper with one-hour caching for
+  matching features and no-match results.
