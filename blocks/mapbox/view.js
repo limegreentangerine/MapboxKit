@@ -1,163 +1,180 @@
-document.addEventListener('DOMContentLoaded', function () {
-	const mapElements = document.querySelectorAll('.block__lgt-mapbox');
+class MapboxComponent extends HTMLElement {
+	// Shared across every instance so a page with several maps only fetches the key once
+	static apiKeyRequest = null;
 
-	if (mapElements.length) {
-		fetch('/ajax/mapbox')
-			.then((res) => res.json())
-			.then((response) => {
-				if (response.apiKey) {
-					mapboxgl.accessToken = response.apiKey;
+	static getApiKey() {
+		if (!MapboxComponent.apiKeyRequest) {
+			MapboxComponent.apiKeyRequest = fetch('/ajax/mapbox')
+				.then((res) => res.json())
+				.then((response) => response.apiKey || null);
+		}
 
-					mapElements.forEach((element) => {
-						let map, mapCenter;
-						let mapId = element.id;
-						let config = element.dataset.config
-							? JSON.parse(element.dataset.config)
-							: {};
+		return MapboxComponent.apiKeyRequest;
+	}
 
-						// config map
-						mapCenter = new mapboxgl.LngLat(
-							config.centerLongitude,
-							config.centerLatitude
-						);
-						map = new mapboxgl.Map({
-							container: mapId,
-							center: mapCenter,
-							zoom: config.zoom,
-							pitch: config.pitch,
-							interactive: config.interactive,
-							style: config.theme,
-							antialias: true
-						});
+	constructor() {
+		super();
+		this.map = null;
+		this.config = {};
+	}
 
-						// Controls
-						if (config.show_controls) {
-							let navOptions = {
-								showCompass: true,
-								showZoom: true
-							};
+	connectedCallback() {
+		if (this.map) return;
 
-							if (config.pitch > 0) {
-								navOptions.visualizePitch = true;
-							}
+		this.config = this.parseConfig();
 
-							const nav = new mapboxgl.NavigationControl(navOptions);
-							map.addControl(nav, config.control_placement);
-						}
+		MapboxComponent.getApiKey()
+			.then((apiKey) => {
+				// The element may have been removed while the key was loading
+				if (!this.isConnected || this.map) return;
 
-						// Buildings
-						if (config.showBuildings) {
-							map.on('load', function () {
-								let layers = map.getStyle().layers;
-								let labelLayerId;
-
-								for (let i = 0; i < layers.length; i++) {
-									if (
-										layers[i].type === 'symbol' &&
-										layers[i].layout['text-field']
-									) {
-										labelLayerId = layers[i].id;
-										break;
-									}
-								}
-
-								map.addLayer(
-									{
-										id: '3d-buildings',
-										source: 'composite',
-										'source-layer': 'building',
-										filter: ['==', 'extrude', 'true'],
-										type: 'fill-extrusion',
-										minzoom: 15,
-										paint: {
-											'fill-extrusion-color': config.extrusionColor,
-											'fill-extrusion-height': [
-												'interpolate',
-												['linear'],
-												['zoom'],
-												15,
-												0,
-												15.05,
-												['get', 'height']
-											],
-											'fill-extrusion-base': [
-												'interpolate',
-												['linear'],
-												['zoom'],
-												15,
-												0,
-												15.05,
-												['get', 'min_height']
-											],
-											'fill-extrusion-opacity': 0.9
-										}
-									},
-									labelLayerId
-								);
-
-								setTimeout(() => {
-									flyToLocation(
-										map,
-										mapCenter,
-										config.zoom,
-										config.pitch,
-										config.markers
-									);
-								}, 500);
-							});
-						} else {
-							setTimeout(() => {
-								flyToLocation(
-									map,
-									mapCenter,
-									config.zoom,
-									config.pitch,
-									config.markers
-								);
-							}, 500);
-						}
-					});
-				} else {
-					console.error('API Key required in LGT Toolkit Dashboard');
-					mapElements.forEach((el) => {
-						el.insertAdjacentHTML(
-							'beforeend',
-							'<div class="alert alert-danger">API key missing in dashboard</div>'
-						);
-					});
+				if (!apiKey) {
+					this.showError();
+					return;
 				}
+
+				mapboxgl.accessToken = apiKey;
+				this.initMap();
 			})
 			.catch((err) => console.error('Mapbox fetch error:', err));
 	}
-});
 
-function addMarkers(map, markers) {
-	if (!Array.isArray(markers)) return;
-
-	markers.forEach((marker) => {
-		let coords = new mapboxgl.LngLat(marker.longitude, marker.latitude);
-		let uiMarker;
-
-		if (marker.markerColor !== '') {
-			uiMarker = new mapboxgl.Marker({
-				color: marker.markerColor
-			});
-		} else {
-			uiMarker = new mapboxgl.Marker();
+	disconnectedCallback() {
+		if (this.map) {
+			this.map.remove();
+			this.map = null;
 		}
-
-		uiMarker.setLngLat(coords).addTo(map);
-	});
-}
-
-function flyToLocation(map, mapCenter, zoom, pitch, markers) {
-	if (markers !== false) {
-		addMarkers(map, markers);
 	}
 
-	map.flyTo({
-		center: mapCenter,
-		zoom: zoom,
-		pitch: pitch
-	});
+	parseConfig() {
+		try {
+			return this.dataset.config ? JSON.parse(this.dataset.config) : {};
+		} catch (err) {
+			console.error('Mapbox config is not valid JSON:', err);
+			return {};
+		}
+	}
+
+	get center() {
+		return new mapboxgl.LngLat(this.config.centerLongitude, this.config.centerLatitude);
+	}
+
+	initMap() {
+		this.map = new mapboxgl.Map({
+			container: this,
+			center: this.center,
+			zoom: this.config.zoom,
+			pitch: this.config.pitch,
+			interactive: this.config.interactive,
+			style: this.config.theme,
+			antialias: true
+		});
+
+		this.addControls();
+
+		if (this.config.showBuildings) {
+			this.map.on('load', () => {
+				this.addBuildings();
+				this.flyToLocation();
+			});
+		} else {
+			this.flyToLocation();
+		}
+	}
+
+	addControls() {
+		if (!this.config.show_controls) return;
+
+		const navOptions = {
+			showCompass: true,
+			showZoom: true
+		};
+
+		if (this.config.pitch > 0) {
+			navOptions.visualizePitch = true;
+		}
+
+		this.map.addControl(
+			new mapboxgl.NavigationControl(navOptions),
+			this.config.control_placement
+		);
+	}
+
+	addBuildings() {
+		// Insert the extrusion layer beneath the first label layer so labels stay readable
+		const labelLayer = this.map
+			.getStyle()
+			.layers.find((layer) => layer.type === 'symbol' && layer.layout['text-field']);
+
+		this.map.addLayer(
+			{
+				id: '3d-buildings',
+				source: 'composite',
+				'source-layer': 'building',
+				filter: ['==', 'extrude', 'true'],
+				type: 'fill-extrusion',
+				minzoom: 15,
+				paint: {
+					'fill-extrusion-color': this.config.extrusionColor,
+					'fill-extrusion-height': [
+						'interpolate',
+						['linear'],
+						['zoom'],
+						15,
+						0,
+						15.05,
+						['get', 'height']
+					],
+					'fill-extrusion-base': [
+						'interpolate',
+						['linear'],
+						['zoom'],
+						15,
+						0,
+						15.05,
+						['get', 'min_height']
+					],
+					'fill-extrusion-opacity': 0.9
+				}
+			},
+			labelLayer ? labelLayer.id : undefined
+		);
+	}
+
+	addMarkers() {
+		if (!Array.isArray(this.config.markers)) return;
+
+		this.config.markers.forEach((marker) => {
+			const options = marker.markerColor ? { color: marker.markerColor } : {};
+
+			new mapboxgl.Marker(options)
+				.setLngLat(new mapboxgl.LngLat(marker.longitude, marker.latitude))
+				.addTo(this.map);
+		});
+	}
+
+	flyToLocation() {
+		setTimeout(() => {
+			if (!this.map) return;
+
+			this.addMarkers();
+			this.map.flyTo({
+				center: this.center,
+				zoom: this.config.zoom,
+				pitch: this.config.pitch
+			});
+		}, 500);
+	}
+
+	showError() {
+		console.error('API Key required in LGT Toolkit Dashboard');
+		this.insertAdjacentHTML(
+			'beforeend',
+			'<div class="alert alert-danger">API key missing in dashboard</div>'
+		);
+	}
+}
+
+if (!customElements.get('mapbox-component')) {
+	customElements.define('mapbox-component', MapboxComponent);
 }

@@ -8,7 +8,13 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class Mapbox
 {
     /**
-     * Returns the Mapbox API key from the LGT Toolkit package configuration.
+     * How long (in seconds) browsers and shared caches may reuse the API key response.
+     * A changed key in the dashboard can take up to this long to reach visitors.
+     */
+    public const CACHE_MAX_AGE = 3600;
+
+    /**
+     * Returns the Mapbox API key from the Mapbox package configuration.
      *
      * @return JsonResponse containing the API key
      */
@@ -16,6 +22,19 @@ class Mapbox
     {
         $pkg = Package::getByHandle('mapbox');
         $config = $pkg->getController()->getFileConfig();
-        return new JsonResponse([ 'apiKey' => $config->get('mapbox.apiKey') ]);
+        $apiKey = $config->get('mapbox.apiKey');
+
+        $response = new JsonResponse([ 'apiKey' => $apiKey ]);
+
+        if ($apiKey) {
+            // The key is a public (pk.) token and identical for every visitor, so shared caches may store it
+            $response->setPublic();
+            $response->setMaxAge(self::CACHE_MAX_AGE);
+        } else {
+            // Never cache the "missing key" state, so a newly saved key takes effect immediately
+            $response->headers->addCacheControlDirective('no-store');
+        }
+
+        return $response;
     }
 }

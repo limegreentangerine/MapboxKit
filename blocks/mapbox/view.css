@@ -1,9 +1,5 @@
-.block__lgt-mapbox {
-	position: relative;
-}
-
-.block__lgt-mapbox:after {
-	content: '';
+mapbox-component {
 	display: block;
-	padding-top: 50%;
+	position: relative;
+	aspect-ratio: 2 / 1;
 }

@@ -5,5 +5,5 @@ $c = Page::getCurrentPage();
 <?php if (is_object($c) && $c->isEditMode()) { ?>
     <div class="ccm-edit-mode-disabled-item"><?php echo t('Mapbox Map.'); ?></div>
 <?php } else { ?>
-    <div id="mapbox_<?php echo $bID; ?>" class="block__lgt-mapbox" data-config='<?php echo htmlspecialchars($config, ENT_QUOTES, 'UTF-8'); ?>'></div>
+    <mapbox-component id="mapbox_<?php echo $bID; ?>" class="block__mapbox" data-config='<?php echo htmlspecialchars($config, ENT_QUOTES, 'UTF-8'); ?>'></mapbox-component>
 <?php } ?>
