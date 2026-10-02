@@ -1,10 +1,10 @@
 <?php
 
-namespace Mapbox\Api;
+namespace MapboxKit\Api;
 
 use Core;
-use Mapbox\Log\MapboxLogger;
-use Mapbox\Search\CachedGeocode;
+use MapboxKit\Log\MapboxLogger;
+use MapboxKit\Search\CachedGeocode;
 use Concrete\Core\Package\Package;
 use ClassKit\Api\Enum\RequestMethod;
 use ClassKit\Api\ConnectionController;

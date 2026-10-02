@@ -6,12 +6,12 @@
 	"minimum-stability": "stable",
 	"autoload": {
 		"psr-4": {
-			"Mapbox\\": "src/"
+			"MapboxKit\\": "src/"
 		}
 	},
 	"autoload-dev": {
 		"psr-4": {
-			"Mapbox\\Tests\\": "tests/"
+			"MapboxKit\\Tests\\": "tests/"
 		}
 	},
 	"authors": [

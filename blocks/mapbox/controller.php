@@ -1,6 +1,6 @@
 <?php
 
-namespace Concrete\Package\Mapbox\Block\Mapbox;
+namespace Concrete\Package\MapboxKit\Block\Mapbox;
 
 defined('C5_EXECUTE') or die('Access Denied.');
 

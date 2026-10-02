@@ -36,10 +36,10 @@ The block obtains the configured token from `/ajax/mapbox`, then renders the map
 
 ## PHP geocoding helper
 
-The `Mapbox\Api\Mapbox` class provides `getLocationDetails(string $location)`. In a Concrete CMS context, resolve it through the application container:
+The `MapboxKit\Api\Mapbox` class provides `getLocationDetails(string $location)`. In a Concrete CMS context, resolve it through the application container:
 
 ```php
-$mapbox = \Core::make(\Mapbox\Api\Mapbox::class);
+$mapbox = \Core::make(\MapboxKit\Api\Mapbox::class);
 $result = $mapbox->getLocationDetails('London');
 ```
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Mapbox\Log;
+namespace MapboxKit\Log;
 
 use ClassKit\Log\Logger;
 

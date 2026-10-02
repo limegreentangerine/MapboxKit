@@ -1,8 +1,8 @@
 <?php
 
-namespace Mapbox\Search;
+namespace MapboxKit\Search;
 
-use Mapbox\Log\MapboxLogger;
+use MapboxKit\Log\MapboxLogger;
 use ClassKit\Search\CachedSearch;
 
 /**

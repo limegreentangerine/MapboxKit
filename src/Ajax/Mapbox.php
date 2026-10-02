@@ -1,6 +1,6 @@
 <?php
 
-namespace Mapbox\Ajax;
+namespace MapboxKit\Ajax;
 
 use Concrete\Core\Package\Package;
 use Symfony\Component\HttpFoundation\JsonResponse;

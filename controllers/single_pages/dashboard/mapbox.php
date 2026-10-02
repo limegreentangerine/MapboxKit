@@ -1,6 +1,6 @@
 <?php
 
-namespace Concrete\Package\Mapbox\Controller\SinglePage\Dashboard\Mapbox;
+namespace Concrete\Package\MapboxKit\Controller\SinglePage\Dashboard\Mapbox;
 
 use Package;
 use UserMessageException;

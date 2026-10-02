@@ -1,16 +1,16 @@
 <?php
 
-namespace Mapbox\Tests\Api;
+namespace MapboxKit\Tests\Api;
 
 use GuzzleHttp\Middleware;
-use Mapbox\Tests\TestCase;
+use MapboxKit\Tests\TestCase;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Exception\ConnectException;
-use Mapbox\Tests\Support\TestableMapboxApi;
+use MapboxKit\Tests\Support\TestableMapboxApi;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 class MapboxTest extends TestCase

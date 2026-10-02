@@ -1,6 +1,6 @@
 <?php
 
-namespace Concrete\Package\Mapbox;
+namespace Concrete\Package\MapboxKit;
 
 use Route;
 use Concrete\Core\Entity\Package;
@@ -18,7 +18,7 @@ class Controller extends PackageController
      *
      * @var string
      */
-    protected $pkgHandle = 'mapbox';
+    protected $pkgHandle = 'mapbox_kit';
 
     /**
      * The packages version.
@@ -88,7 +88,7 @@ class Controller extends PackageController
      * @var array
      */
     protected $pkgAutoloaderRegistries = [
-        'src' => '\Mapbox',
+        'src' => '\MapboxKit',
     ];
 
     /**
@@ -121,7 +121,7 @@ class Controller extends PackageController
 
     public function registerRoutes(): void
     {
-        Route::register('/ajax/mapbox', '\Mapbox\Ajax\Mapbox::getApiKey');
+        Route::register('/ajax/mapbox', '\MapboxKit\Ajax\Mapbox::getApiKey');
     }
 
     public function registerEvents(): void {}

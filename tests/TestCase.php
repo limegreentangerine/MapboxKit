@@ -1,6 +1,6 @@
 <?php
 
-namespace Mapbox\Tests;
+namespace MapboxKit\Tests;
 
 use Stash\Pool;
 use Monolog\Logger;

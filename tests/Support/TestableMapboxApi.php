@@ -1,8 +1,8 @@
 <?php
 
-namespace Mapbox\Tests\Support;
+namespace MapboxKit\Tests\Support;
 
-use Mapbox\Api\Mapbox;
+use MapboxKit\Api\Mapbox;
 use GuzzleHttp\Client as HttpClient;
 
 /**
