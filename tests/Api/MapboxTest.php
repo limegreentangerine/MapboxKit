@@ -3,10 +3,10 @@
 namespace MapboxKit\Tests\Api;
 
 use GuzzleHttp\Middleware;
-use MapboxKit\Tests\TestCase;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use MapboxKit\Tests\TestCase;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Exception\ConnectException;

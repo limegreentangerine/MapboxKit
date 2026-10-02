@@ -4,8 +4,8 @@ namespace MapboxKit\Api;
 
 use Core;
 use MapboxKit\Log\MapboxLogger;
-use MapboxKit\Search\CachedGeocode;
 use Concrete\Core\Package\Package;
+use MapboxKit\Search\CachedGeocode;
 use ClassKit\Api\Enum\RequestMethod;
 use ClassKit\Api\ConnectionController;
 use Concrete\Core\Http\ResponseFactory;
@@ -47,7 +47,7 @@ class Mapbox extends ConnectionController
      */
     public function __construct()
     {
-        $this->pkg = Package::getByHandle('mapbox');
+        $this->pkg = Package::getByHandle('mapbox_kit');
         $this->rf = Core::make(\Concrete\Core\Http\ResponseFactoryInterface::class);
         $this->config = $this->pkg->getController()->getFileConfig();
         $this->logger = Core::make(MapboxLogger::class)->getLogger();

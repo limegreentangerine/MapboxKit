@@ -33,7 +33,7 @@ abstract class TestCase extends BaseTestCase
     protected Pool $cachePool;
 
     /**
-     * Makes `Package::getByHandle('mapbox')->getFileConfig()->get('mapbox.apiKey')` return $apiKey.
+     * Makes `Package::getByHandle('mapbox_kit')->getFileConfig()->get('mapbox.apiKey')` return $apiKey.
      */
     protected function bindApiKey(?string $apiKey): void
     {
@@ -58,7 +58,7 @@ abstract class TestCase extends BaseTestCase
         };
 
         $packageService = $this->createMock(PackageService::class);
-        $packageService->method('getByHandle')->willReturnMap([['mapbox', $package]]);
+        $packageService->method('getByHandle')->willReturnMap([['mapbox_kit', $package]]);
         $this->app->instance(PackageService::class, $packageService);
     }
 

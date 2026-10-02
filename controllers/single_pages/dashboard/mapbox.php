@@ -1,6 +1,6 @@
 <?php
 
-namespace Concrete\Package\MapboxKit\Controller\SinglePage\Dashboard\Mapbox;
+namespace Concrete\Package\MapboxKit\Controller\SinglePage\Dashboard;
 
 use Package;
 use UserMessageException;
@@ -26,7 +26,7 @@ class Mapbox extends DashboardPageController
     {
         parent::on_start();
 
-        $this->pkg = Package::getByHandle('mapbox');
+        $this->pkg = Package::getByHandle('mapbox_kit');
         $this->set('pkg', $this->pkg);
     }
 

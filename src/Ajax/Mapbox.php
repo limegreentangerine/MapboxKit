@@ -20,7 +20,7 @@ class Mapbox
      */
     public function getApiKey(): JsonResponse
     {
-        $pkg = Package::getByHandle('mapbox');
+        $pkg = Package::getByHandle('mapbox_kit');
         $config = $pkg->getController()->getFileConfig();
         $apiKey = $config->get('mapbox.apiKey');
 
