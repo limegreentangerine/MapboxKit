@@ -167,10 +167,10 @@ class MapboxComponent extends HTMLElement {
 	}
 
 	showError() {
-		console.error('API Key required in LGT Toolkit Dashboard');
+		console.error('MAPBOX_API_KEY is not set in the site .env file');
 		this.insertAdjacentHTML(
 			'beforeend',
-			'<div class="alert alert-danger">API key missing in dashboard</div>'
+			'<div class="alert alert-danger">Mapbox API key missing. Add MAPBOX_API_KEY to the site .env file.</div>'
 		);
 	}
 }

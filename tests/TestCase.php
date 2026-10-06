@@ -1,18 +1,17 @@
 <?php
 
-namespace Mapbox\Tests;
+namespace MapboxKit\Tests;
 
 use Stash\Pool;
 use Monolog\Logger;
 use Stash\Driver\Ephemeral;
+use MapboxKit\Config\MapboxEnv;
 use Monolog\Handler\TestHandler;
 use Concrete\Core\Utility\Service\Url;
 use Concrete\Core\Logging\LoggerFactory;
 use Concrete\Core\Support\Facade\Facade;
-use Concrete\Core\Package\PackageService;
 use Concrete\Core\Application\Application;
 use Concrete\Core\Cache\Level\ExpensiveCache;
-use Concrete\Core\Config\Repository\Repository;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 use Concrete\Core\Http\ResponseFactoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -33,33 +32,15 @@ abstract class TestCase extends BaseTestCase
     protected Pool $cachePool;
 
     /**
-     * Makes `Package::getByHandle('mapbox')->getFileConfig()->get('mapbox.apiKey')` return $apiKey.
+     * Makes the MAPBOX_API_KEY environment variable return $apiKey (unset when null).
      */
     protected function bindApiKey(?string $apiKey): void
     {
-        $config = $this->createMock(Repository::class);
-        $config->method('get')->willReturnCallback(
-            fn(string $key, $default = null) => $key === 'mapbox.apiKey' ? $apiKey : $default,
-        );
-
-        // Stands in for both the package entity (getController()) and the package controller (getFileConfig()).
-        $package = new class($config) {
-            public function __construct(private Repository $config) {}
-
-            public function getController(): self
-            {
-                return $this;
-            }
-
-            public function getFileConfig(): Repository
-            {
-                return $this->config;
-            }
-        };
-
-        $packageService = $this->createMock(PackageService::class);
-        $packageService->method('getByHandle')->willReturnMap([['mapbox', $package]]);
-        $this->app->instance(PackageService::class, $packageService);
+        if ($apiKey === null) {
+            unset($_ENV[MapboxEnv::API_KEY]);
+        } else {
+            $_ENV[MapboxEnv::API_KEY] = $apiKey;
+        }
     }
 
     protected function setUp(): void
@@ -95,6 +76,7 @@ abstract class TestCase extends BaseTestCase
 
     protected function tearDown(): void
     {
+        unset($_ENV[MapboxEnv::API_KEY]);
         Facade::clearResolvedInstances();
         Facade::setFacadeApplication(null);
 

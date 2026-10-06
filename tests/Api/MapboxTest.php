@@ -1,16 +1,16 @@
 <?php
 
-namespace Mapbox\Tests\Api;
+namespace MapboxKit\Tests\Api;
 
 use GuzzleHttp\Middleware;
-use Mapbox\Tests\TestCase;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use MapboxKit\Tests\TestCase;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Exception\ConnectException;
-use Mapbox\Tests\Support\TestableMapboxApi;
+use MapboxKit\Tests\Support\TestableMapboxApi;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 class MapboxTest extends TestCase
@@ -53,7 +53,7 @@ class MapboxTest extends TestCase
         ];
     }
 
-    public function testConstructorLoadsApiKeyFromPackageConfig(): void
+    public function testConstructorLoadsApiKeyFromEnv(): void
     {
         $api = $this->makeApi([]);
 
@@ -70,7 +70,7 @@ class MapboxTest extends TestCase
 
     public function testConstructorThrowsWhenApiKeyIsNotConfigured(): void
     {
-        // Pins current behaviour: setApiKey(string) rejects the null config value.
+        // Pins current behaviour: setApiKey(string) rejects the null env value.
         $this->expectException(\TypeError::class);
 
         $this->makeApi([], null);

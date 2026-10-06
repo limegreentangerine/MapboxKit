@@ -1,9 +1,9 @@
 <?php
 
-namespace Mapbox\Tests\Search;
+namespace MapboxKit\Tests\Search;
 
-use Mapbox\Tests\TestCase;
-use Mapbox\Search\CachedGeocode;
+use MapboxKit\Tests\TestCase;
+use MapboxKit\Search\CachedGeocode;
 
 class CachedGeocodeTest extends TestCase
 {

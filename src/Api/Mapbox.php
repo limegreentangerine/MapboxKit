@@ -1,11 +1,11 @@
 <?php
 
-namespace Mapbox\Api;
+namespace MapboxKit\Api;
 
 use Core;
-use Mapbox\Log\MapboxLogger;
-use Mapbox\Search\CachedGeocode;
-use Concrete\Core\Package\Package;
+use MapboxKit\Config\MapboxEnv;
+use MapboxKit\Log\MapboxLogger;
+use MapboxKit\Search\CachedGeocode;
 use ClassKit\Api\Enum\RequestMethod;
 use ClassKit\Api\ConnectionController;
 use Concrete\Core\Http\ResponseFactory;
@@ -20,14 +20,6 @@ class Mapbox extends ConnectionController
      * @var array
      */
     protected $authHeader;
-    /**
-     * @var \Concrete\Core\Entity\Package
-     */
-    protected $pkg;
-    /**
-     * @var object
-     */
-    protected $config;
     /**
      * @var ResponseFactory
      */
@@ -47,12 +39,10 @@ class Mapbox extends ConnectionController
      */
     public function __construct()
     {
-        $this->pkg = Package::getByHandle('mapbox');
         $this->rf = Core::make(\Concrete\Core\Http\ResponseFactoryInterface::class);
-        $this->config = $this->pkg->getController()->getFileConfig();
         $this->logger = Core::make(MapboxLogger::class)->getLogger();
         $this->cache = Core::make(CachedGeocode::class);
-        $this->setApiKey($this->config->get('mapbox.apiKey'));
+        $this->setApiKey(MapboxEnv::apiKey());
         $this->setAuthHeader($this->getApiKey());
         parent::__construct(
             'https://api.mapbox.com',

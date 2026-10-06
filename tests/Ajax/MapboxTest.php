@@ -1,9 +1,9 @@
 <?php
 
-namespace Mapbox\Tests\Ajax;
+namespace MapboxKit\Tests\Ajax;
 
-use Mapbox\Ajax\Mapbox;
-use Mapbox\Tests\TestCase;
+use MapboxKit\Ajax\Mapbox;
+use MapboxKit\Tests\TestCase;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 class MapboxTest extends TestCase

@@ -1,6 +1,6 @@
 {
-	"name": "mapbox",
-	"version": "1.0.0",
+	"name": "mapbox_kit",
+	"version": "1.0.1",
 	"description": "",
 	"main": "index.js",
 	"directories": {
