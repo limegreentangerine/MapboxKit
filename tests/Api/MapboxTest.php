@@ -53,7 +53,7 @@ class MapboxTest extends TestCase
         ];
     }
 
-    public function testConstructorLoadsApiKeyFromPackageConfig(): void
+    public function testConstructorLoadsApiKeyFromEnv(): void
     {
         $api = $this->makeApi([]);
 
@@ -70,7 +70,7 @@ class MapboxTest extends TestCase
 
     public function testConstructorThrowsWhenApiKeyIsNotConfigured(): void
     {
-        // Pins current behaviour: setApiKey(string) rejects the null config value.
+        // Pins current behaviour: setApiKey(string) rejects the null env value.
         $this->expectException(\TypeError::class);
 
         $this->makeApi([], null);
