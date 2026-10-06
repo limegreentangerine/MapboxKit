@@ -4,17 +4,22 @@
     <?php echo t('These settings are read from the site\'s %s file and cannot be changed here.', '<code>.env</code>'); ?>
 </p>
 
-<?php if ($populated) { ?>
-    <div class="alert alert-success">
-        <strong><?php echo t('API Key'); ?></strong>
-        <code><?php echo h($envName); ?></code>:
-        <?php echo h($display); ?>
-    </div>
-<?php } else { ?>
-    <div class="alert alert-warning">
-        <strong><?php echo t('API Key'); ?></strong>
-        <?php echo t('has not been populated. Add %s to your .env file.', '<code>' . h($envName) . '</code>'); ?>
-    </div>
+<?php foreach ($settings as $setting) { ?>
+    <?php if ($setting['populated']) { ?>
+        <div class="alert alert-success">
+            <strong><?php echo h($setting['label']); ?></strong>
+            <code><?php echo h($setting['env']); ?></code>:
+            <?php echo h($setting['display']); ?>
+        </div>
+    <?php } else { ?>
+        <div class="alert alert-warning">
+            <strong><?php echo h($setting['label']); ?></strong>
+            <?php echo t('has not been populated. Add %s to your .env file.', '<code>' . h($setting['env']) . '</code>'); ?>
+            <?php if ($setting['default'] !== null) { ?>
+                <?php echo t('Using the default: %s.', '<code>' . h($setting['default']) . '</code>'); ?>
+            <?php } ?>
+        </div>
+    <?php } ?>
 <?php } ?>
 
 <p class="help-block">

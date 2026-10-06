@@ -6,16 +6,31 @@ use MapboxKit\Config\MapboxEnv;
 use Concrete\Core\Page\Controller\DashboardPageController;
 
 /**
- * Read-only: the Mapbox API key lives in the site's .env file, so this page only reports whether it is populated.
+ * Read-only: the Mapbox settings live in the site's .env file, so this page only reports which are populated.
  */
 class Mapbox extends DashboardPageController
 {
     public function view()
     {
-        $populated = MapboxEnv::apiKey() !== null;
+        $apiKey = MapboxEnv::apiKey();
+        $glVersion = MapboxEnv::glVersion();
 
-        $this->set('envName', MapboxEnv::API_KEY);
-        $this->set('populated', $populated);
-        $this->set('display', $populated ? str_repeat('•', 8) : '');
+        $this->set('settings', [
+            'apiKey' => [
+                'env' => MapboxEnv::API_KEY,
+                'label' => t('API Key'),
+                'populated' => $apiKey !== null,
+                // The key is a secret, so only report that it is set
+                'display' => $apiKey !== null ? str_repeat('•', 8) : '',
+                'default' => null,
+            ],
+            'glVersion' => [
+                'env' => MapboxEnv::GL_VERSION,
+                'label' => t('Mapbox GL JS Version'),
+                'populated' => $glVersion !== null,
+                'display' => $glVersion ?? '',
+                'default' => MapboxEnv::DEFAULT_GL_VERSION,
+            ],
+        ]);
     }
 }

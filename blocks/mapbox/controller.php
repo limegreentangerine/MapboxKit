@@ -4,6 +4,7 @@ namespace Concrete\Package\MapboxKit\Block\Mapbox;
 
 defined('C5_EXECUTE') or die('Access Denied.');
 
+use MapboxKit\Config\MapboxEnv;
 use Concrete\Core\Block\BlockController;
 
 class Controller extends BlockController
@@ -67,8 +68,10 @@ class Controller extends BlockController
 
         $html = $this->app->make('helper/html');
 
-        $this->addHeaderItem($html->css('https://api.mapbox.com/mapbox-gl-js/v3.21.0/mapbox-gl.css'));
-        $this->addHeaderItem($html->javascript('https://api.mapbox.com/mapbox-gl-js/v3.21.0/mapbox-gl.js'));
+        $version = MapboxEnv::glVersionOrDefault();
+
+        $this->addHeaderItem($html->css('//api.mapbox.com/mapbox-gl-js/v' . $version . '/mapbox-gl.css'));
+        $this->addHeaderItem($html->javascript('//api.mapbox.com/mapbox-gl-js/v' . $version . '/mapbox-gl.js'));
     }
 
     public function getControlPlacementOptions()
