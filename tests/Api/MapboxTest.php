@@ -187,17 +187,21 @@ class MapboxTest extends TestCase
         $this->assertNull($api->getLocationDetails('London'));
     }
 
-    public function testGetLocationDetailsLetsConnectionFailuresPropagate(): void
+    public function testGetLocationDetailsReturnsErrorResponseOnConnectionFailure(): void
     {
-        // Pins current behaviour: in Guzzle 7 ConnectException is not a RequestException, so
-        // ClassKit's ConnectionController::makeRequest() doesn't catch it. Update when ClassKit does.
         $api = $this->makeApi([
             new ConnectException('Could not resolve host', new Request('GET', 'https://api.mapbox.com')),
         ]);
 
-        $this->expectException(ConnectException::class);
+        $response = $api->getLocationDetails('London');
 
-        $api->getLocationDetails('London');
+        $this->assertInstanceOf(JsonResponse::class, $response);
+        $this->assertSame(500, $response->getStatusCode());
+        $payload = json_decode($response->getContent(), true);
+        $this->assertFalse($payload['success']);
+        $this->assertSame(500, $payload['code']);
+        $error = json_decode($payload['error'], true);
+        $this->assertStringContainsString('Could not resolve host', $error['message']);
     }
 
     public function testGetLocationDetailsServesRepeatLookupsFromCache(): void

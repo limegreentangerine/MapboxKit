@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "875b9671ed2eb3f98ca8801b17ef2fc4",
+    "content-hash": "5bc66f166a94e4e09357586258c7e6df",
     "packages": [
         {
             "name": "limegreentangerine/class_kit",
-            "version": "1.0.5",
+            "version": "2.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/limegreentangerine/ClassKit.git",
-                "reference": "b14953ca414d88d192ceed5d22b3861b3d063624"
+                "reference": "318aee48c660d4a685265f601e5d6c6f9be7a206"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/limegreentangerine/ClassKit/zipball/b14953ca414d88d192ceed5d22b3861b3d063624",
-                "reference": "b14953ca414d88d192ceed5d22b3861b3d063624",
+                "url": "https://api.github.com/repos/limegreentangerine/ClassKit/zipball/318aee48c660d4a685265f601e5d6c6f9be7a206",
+                "reference": "318aee48c660d4a685265f601e5d6c6f9be7a206",
                 "shasum": ""
             },
             "require-dev": {
@@ -26,6 +26,9 @@
                 "php": "^8.4",
                 "phpunit/phpunit": "^11"
             },
+            "bin": [
+                "bin/create-svelte-component"
+            ],
             "type": "concrete5-package",
             "autoload": {
                 "psr-4": {
@@ -49,9 +52,9 @@
             "description": "Collection of helper classes for LGT packages.",
             "support": {
                 "issues": "https://github.com/limegreentangerine/ClassKit/issues",
-                "source": "https://github.com/limegreentangerine/ClassKit/tree/1.0.5"
+                "source": "https://github.com/limegreentangerine/ClassKit/tree/2.0.3"
             },
-            "time": "2026-09-28T15:20:57+00:00"
+            "time": "2026-11-04T11:22:22+00:00"
         }
     ],
     "packages-dev": [

@@ -11,10 +11,13 @@ use Concrete\Core\Utility\Service\Url;
 use Concrete\Core\Logging\LoggerFactory;
 use Concrete\Core\Support\Facade\Facade;
 use Concrete\Core\Application\Application;
+use Concrete\Core\Localization\Localization;
 use Concrete\Core\Cache\Level\ExpensiveCache;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 use Concrete\Core\Http\ResponseFactoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Concrete\Core\Localization\Translator\TranslatorAdapterRepository;
+use Concrete\Core\Localization\Translator\Adapter\Plain\TranslatorAdapterFactory;
 
 /**
  * Boots a bare ConcreteCMS container behind the facades so package classes
@@ -51,6 +54,13 @@ abstract class TestCase extends BaseTestCase
         $this->app->instance('app', $this->app);
         Facade::clearResolvedInstances();
         Facade::setFacadeApplication($this->app);
+
+        $localization = new Localization();
+        $localization->setTranslatorAdapterRepository(
+            new TranslatorAdapterRepository(new TranslatorAdapterFactory()),
+        );
+        $localization->setActiveContext(Localization::CONTEXT_UI);
+        $this->app->instance(Localization::class, $localization);
 
         $responseFactory = $this->createMock(ResponseFactoryInterface::class);
         $responseFactory->method('json')->willReturnCallback(
