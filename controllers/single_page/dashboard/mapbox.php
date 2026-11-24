@@ -31,6 +31,14 @@ class Mapbox extends DashboardPageController
                 'display' => $glVersion ?? '',
                 'default' => MapboxEnv::DEFAULT_GL_VERSION,
             ],
+            'globalGeocode' => [
+                'env' => MapboxEnv::GLOBAL_GEOCODE,
+                'label' => t('Global Geocoding'),
+                // Optional flag with a safe default, so never show the "not populated" warning
+                'populated' => true,
+                'display' => MapboxEnv::globalGeocode() ? t('On (worldwide)') : t('Off (UK only)'),
+                'default' => null,
+            ],
         ]);
     }
 }

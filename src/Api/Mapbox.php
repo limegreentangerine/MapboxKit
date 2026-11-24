@@ -98,7 +98,7 @@ class Mapbox extends ConnectionController
             return $cached['feature'] === null ? null : $this->rf->json($cached['feature']);
         }
 
-        $request = (object) $this->makeRequest(RequestMethod::GET->value, $this->formatURL(sprintf('/geocoding/v5/mapbox.places/%s.json', rawurlencode($location))) . '&country=gb');
+        $request = (object) $this->makeRequest(RequestMethod::GET->value, $this->formatURL(sprintf('/geocoding/v5/mapbox.places/%s.json', rawurlencode($location))) . (MapboxEnv::globalGeocode() ? '' : '&country=gb'));
         if ($request->getStatusCode() !== 200) {
             $this->logger->addError(sprintf('Unable to get location details for %s: [%d]. Details. %s. %s %s (%s)', $location, $request->getStatusCode(), $request->getBody(), __FUNCTION__, __CLASS__, __LINE__));
             return $this->rf->json([

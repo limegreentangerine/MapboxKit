@@ -7,6 +7,7 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use MapboxKit\Tests\TestCase;
+use MapboxKit\Config\MapboxEnv;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Exception\ConnectException;
@@ -91,6 +92,19 @@ class MapboxTest extends TestCase
 
         parse_str($request->getUri()->getQuery(), $query);
         $this->assertSame(['access_token' => 'pk.test-key', 'country' => 'gb'], $query);
+    }
+
+    public function testGetLocationDetailsOmitsCountryWhenGlobalGeocodeEnabled(): void
+    {
+        $_ENV[MapboxEnv::GLOBAL_GEOCODE] = 'true';
+        $api = $this->makeApi([$this->geocodeResponse([])]);
+
+        $api->getLocationDetails('Paris');
+
+        /** @var Request $request */
+        $request = $this->history[0]['request'];
+        parse_str($request->getUri()->getQuery(), $query);
+        $this->assertSame(['access_token' => 'pk.test-key'], $query);
     }
 
     public static function locationEncodingProvider(): array
