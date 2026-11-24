@@ -86,7 +86,7 @@ abstract class TestCase extends BaseTestCase
 
     protected function tearDown(): void
     {
-        unset($_ENV[MapboxEnv::API_KEY]);
+        unset($_ENV[MapboxEnv::API_KEY], $_ENV[MapboxEnv::GLOBAL_GEOCODE]);
         Facade::clearResolvedInstances();
         Facade::setFacadeApplication(null);
 

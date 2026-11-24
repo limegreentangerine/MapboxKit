@@ -9,6 +9,7 @@ class MapboxEnv
 {
     public const API_KEY = 'MAPBOX_API_KEY';
     public const GL_VERSION = 'MAPBOX_GL_JS_VERSION';
+    public const GLOBAL_GEOCODE = 'MAPBOX_GLOBAL_GEOCODE';
 
     /**
      * Used when MAPBOX_GL_JS_VERSION is unset or is not a valid version.
@@ -51,5 +52,13 @@ class MapboxEnv
     public static function glVersionOrDefault(): string
     {
         return self::glVersion() ?? self::DEFAULT_GL_VERSION;
+    }
+
+    /**
+     * Whether geocoding searches worldwide instead of only in the UK. Off unless MAPBOX_GLOBAL_GEOCODE is true/1/yes/on.
+     */
+    public static function globalGeocode(): bool
+    {
+        return filter_var(self::get(self::GLOBAL_GEOCODE), FILTER_VALIDATE_BOOLEAN);
     }
 }

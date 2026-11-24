@@ -4,6 +4,12 @@ Mapbox for Concrete CMS - Changelog
 Entries begin with the current Composer package version. Earlier package
 history has not been reconstructed here.
 
+1.1.0
+------------
+- Adds the MAPBOX_GLOBAL_GEOCODE .env setting. When true, the geocoding helper
+  searches worldwide instead of restricting results to the UK (gb). Defaults to
+  false.
+
 1.0.0
 ------------
 Baseline recorded for the current package:

@@ -24,7 +24,7 @@ echo $form->text('centerLongitude', $centerLongitude ?? null);
 echo $form->text('theme', $theme ?? null);
 ?>
             <div class="help-block">
-                <?php echo t('Styles can be found <a href="https://docs.mapbox.com/mapbox-gl-js/api/map/" target="_blank">here</a>. Custom styles can be created in <a href="https://studio.mapbox.com/" target="_blank">Mapbox Studio</a>. Ensure the Mapbox GL JS version is set to <code>3.21.0</code>'); ?>
+                <?php echo t('Styles can be found <a href="https://docs.mapbox.com/mapbox-gl-js/api/map/" target="_blank">here</a>. Custom styles can be created in <a href="https://studio.mapbox.com/" target="_blank">Mapbox Studio</a>. Ensure the Mapbox GL JS version is set to <code>%s</code>', h(\MapboxKit\Config\MapboxEnv::glVersionOrDefault())); ?>
             </div>
         </div>
 
